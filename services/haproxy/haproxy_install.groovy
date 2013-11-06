@@ -18,7 +18,15 @@ config=new ConfigSlurper().parse(new File('haproxy-service.properties').toURL())
 
 def os = OperatingSystem.getInstance()
 def currVendor=os.getVendor()
-def installScript = "installHaproxy.sh"
+switch (currVendor) {
+                case ["Ubuntu", "Debian", "Mint"]:                        
+                        def installScript = "installHaproxyUbuntu.sh")
+                        break                
+                case ["Red Hat", "CentOS", "Fedora", "Amazon",""]:                        
+                        def installScript = "installHaproxy.sh"
+                        break                                        
+                default: throw new Exception("Support for ${currVendor} is not implemented")
+}
 
 new AntBuilder().sequential {
 	echo(message:"haproxy_install.groovy: Chmodding +x ${context.serviceDirectory} ...")
